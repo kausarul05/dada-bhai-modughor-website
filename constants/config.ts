@@ -1,0 +1,20 @@
+export const CONFIG = {
+  APP_NAME: 'দাদা ভাই মধু ঘর',
+  APP_NAME_EN: 'Dada Bhai Modhughor',
+  APP_DESCRIPTION: 'প্রাকৃতিক ও অর্গানিক পণ্যের বিশ্বস্ত অনলাইন স্টোর',
+  APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  CURRENCY: '৳',
+  CURRENCY_CODE: 'BDT',
+  PRODUCTS_PER_PAGE: 12,
+  MAX_CART_QUANTITY: 99,
+  FREE_SHIPPING_THRESHOLD: 1000,
+  SHIPPING_COST: 100,
+  PHONE: '+880 1700-000000',
+  EMAIL: 'info@dadabhai-modhughor.com',
+  ADDRESS: 'ঢাকা, বাংলাদেশ',
+  SOCIAL: {
+    FACEBOOK: 'https://facebook.com/dadabhaimodhughor',
+    INSTAGRAM: 'https://instagram.com/dadabhaimodhughor',
+    WHATSAPP: 'https://wa.me/8801700000000',
+  },
+} as const;
