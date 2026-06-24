@@ -2,193 +2,149 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingCart } from 'lucide-react';
+import { Heart, ShoppingCart, Star } from 'lucide-react';
 import { toast } from 'sonner';
-
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Rating } from '@/components/ui/Rating';
-import { StockBadge } from '@/components/ui/StockBadge';
 import { cn, formatPrice, discountPercent, effectivePrice } from '@/lib/utils';
 import { ROUTES } from '@/constants/routes';
 import { useCartStore } from '@/store/useCartStore';
 import { useWishlistStore } from '@/store/useWishlistStore';
 import type { Product } from '@/types/product';
 
-interface ProductCardProps {
-  product: Product;
-  className?: string;
-  layout?: 'grid' | 'list';
-}
-
-export function ProductCard({ product, className, layout = 'grid' }: ProductCardProps) {
+export function ProductCard({ product, className }: { product: Product; className?: string }) {
   const { addItem, isInCart } = useCartStore();
   const { toggle, isWishlisted } = useWishlistStore();
 
-  const price = effectivePrice(product);
+  const price      = effectivePrice(product);
   const hasDiscount = !!product.discountPrice;
-  const pct = hasDiscount ? discountPercent(product.price, product.discountPrice!) : 0;
-  const wishlisted = isWishlisted(product.id);
-  const inCart = isInCart(product.id);
-  const outOfStock = product.stock === 0;
+  const pct        = hasDiscount ? discountPercent(product.price, product.discountPrice!) : 0;
+  const wishlisted  = isWishlisted(product.id);
+  const inCart      = isInCart(product.id);
+  const outOfStock  = product.stock === 0;
 
-  function handleAddToCart(e: React.MouseEvent) {
+  function handleCart(e: React.MouseEvent) {
     e.preventDefault();
     if (outOfStock) return;
     addItem({
-      productId: product.id,
-      name: product.name,
-      nameBn: product.nameBn,
-      price: product.price,
-      discountPrice: product.discountPrice,
-      image: product.thumbnailImage,
-      quantity: 1,
-      stock: product.stock,
-      unit: product.unit,
+      productId: product.id, name: product.name, nameBn: product.nameBn,
+      price: product.price, discountPrice: product.discountPrice,
+      image: product.thumbnailImage, quantity: 1,
+      stock: product.stock, unit: product.unit,
     });
-    toast.success(`${product.nameBn} কার্টে যোগ হয়েছে`);
+    toast.success(`${product.nameBn} কার্টে যোগ হয়েছে 🛒`);
   }
 
   function handleWishlist(e: React.MouseEvent) {
     e.preventDefault();
     toggle(product);
-    toast.success(
-      wishlisted ? 'উইশলিস্ট থেকে সরানো হয়েছে' : 'উইশলিস্টে যোগ হয়েছে'
-    );
-  }
-
-  if (layout === 'list') {
-    return (
-      <Link
-        href={ROUTES.PRODUCT(product.slug)}
-        className={cn(
-          'group flex gap-4 rounded-xl border border-border bg-surface p-3 shadow-sm transition-shadow hover:shadow-md',
-          className
-        )}
-      >
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg">
-          <Image
-            src={product.thumbnailImage}
-            alt={product.nameBn}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="96px"
-          />
-        </div>
-        <div className="flex flex-1 flex-col justify-between">
-          <div>
-            <p className="font-display text-sm font-medium line-clamp-2">{product.nameBn}</p>
-            <Rating value={product.rating} showCount count={product.reviewCount} className="mt-1" />
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="font-bold text-primary">{formatPrice(price)}</span>
-              {hasDiscount && (
-                <span className="ml-1.5 text-xs text-muted-foreground line-through">
-                  {formatPrice(product.price)}
-                </span>
-              )}
-            </div>
-            <Button size="sm" variant="outline" onClick={handleAddToCart} disabled={outOfStock}>
-              <ShoppingCart size={14} />
-            </Button>
-          </div>
-        </div>
-      </Link>
-    );
+    toast.success(wishlisted ? 'উইশলিস্ট থেকে সরানো হয়েছে' : '❤️ উইশলিস্টে যোগ হয়েছে');
   }
 
   return (
     <Link
       href={ROUTES.PRODUCT(product.slug)}
       className={cn(
-        'group relative flex flex-col rounded-xl border border-border bg-surface shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-honey overflow-hidden',
+        'group relative flex flex-col rounded-2xl overflow-hidden border border-[#D9CEBC] bg-[#FAF4E8] transition-all duration-300 hover:-translate-y-1.5',
+        'shadow-card hover:shadow-card-hover',
         className
       )}
     >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden">
+      <div className="relative overflow-hidden bg-[#EAE0CB]" style={{ aspectRatio: '1/1' }}>
         <Image
           src={product.thumbnailImage}
           alt={product.nameBn}
           fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
         />
 
-        {/* Badges */}
+        {/* Top-left badges */}
         <div className="absolute left-2 top-2 flex flex-col gap-1">
           {hasDiscount && (
-            <Badge className="bg-red-500 text-white text-xs px-1.5 py-0.5">
+            <span className="rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white shadow">
               -{pct}%
-            </Badge>
+            </span>
           )}
           {product.isBestSeller && (
-            <Badge className="bg-primary text-white text-xs px-1.5 py-0.5">
-              বেস্ট সেলার
-            </Badge>
+            <span className="rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow"
+              style={{ background: 'linear-gradient(135deg,#F4B942,#C8860A)' }}>
+              বেস্ট
+            </span>
           )}
         </div>
 
         {/* Wishlist button */}
-        <button
-          onClick={handleWishlist}
-          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow backdrop-blur-sm transition-transform hover:scale-110"
-          aria-label="উইশলিস্টে যোগ করুন"
-        >
-          <Heart
-            size={15}
-            className={cn(
-              'transition-colors',
-              wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'
-            )}
-          />
+        <button onClick={handleWishlist}
+          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur-sm transition-all hover:scale-110">
+          <Heart size={14}
+            className={cn(wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500')} />
         </button>
 
         {/* Out of stock overlay */}
         {outOfStock && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-            <span className="rounded-md bg-white px-3 py-1 text-xs font-medium text-gray-800">
+            <span className="rounded-xl bg-white/95 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow">
               স্টক শেষ
             </span>
           </div>
         )}
       </div>
 
-      {/* Info */}
-      <div className="flex flex-1 flex-col gap-2 p-3">
-        <p className="font-display text-sm font-medium leading-snug line-clamp-2 text-foreground">
+      {/* Details */}
+      <div className="flex flex-1 flex-col p-3 gap-2">
+        {/* Name */}
+        <p className="font-display text-sm font-semibold leading-snug line-clamp-2 text-[#1C1008]">
           {product.nameBn}
         </p>
 
-        <Rating value={product.rating} showCount count={product.reviewCount} />
+        {/* Stars */}
+        <div className="flex items-center gap-1">
+          <div className="flex">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} size={10}
+                className={i < Math.round(product.rating)
+                  ? 'fill-[#C8860A] text-[#C8860A]'
+                  : 'fill-[#D9CEBC] text-[#D9CEBC]'} />
+            ))}
+          </div>
+          <span className="text-[10px] text-[#7A6748]">({product.reviewCount})</span>
+        </div>
 
-        <StockBadge stock={product.stock} />
+        {/* Stock warning */}
+        {product.stock > 0 && product.stock <= 5 && (
+          <p className="text-[10px] font-medium text-red-500">
+            মাত্র {product.stock}টি বাকি!
+          </p>
+        )}
 
-        {/* Price + Add to Cart */}
-        <div className="mt-auto flex items-center justify-between pt-1">
+        {/* Price row */}
+        <div className="mt-auto flex items-end justify-between pt-1">
           <div>
-            <span className="text-base font-bold text-primary">{formatPrice(price)}</span>
+            <div className="font-bold text-[#C8860A] text-base leading-none">
+              {formatPrice(price)}
+            </div>
             {hasDiscount && (
-              <span className="ml-1 text-xs text-muted-foreground line-through">
+              <div className="text-[11px] text-[#7A6748] line-through">
                 {formatPrice(product.price)}
-              </span>
+              </div>
             )}
-            <p className="text-xs text-muted-foreground">/{product.unit}</p>
+            <div className="text-[10px] text-[#7A6748]">/{product.unit}</div>
           </div>
 
-          <Button
-            size="icon"
-            className={cn(
-              'h-9 w-9 rounded-lg transition-all',
-              inCart ? 'bg-secondary hover:bg-secondary/90' : 'bg-primary hover:bg-primary/90'
-            )}
-            onClick={handleAddToCart}
+          {/* Add to cart button */}
+          <button
+            onClick={handleCart}
             disabled={outOfStock}
-            aria-label="কার্টে যোগ করুন"
-          >
-            <ShoppingCart size={15} className="text-white" />
-          </Button>
+            className={cn(
+              'flex h-9 w-9 items-center justify-center rounded-xl transition-all hover:scale-110 disabled:opacity-40 disabled:cursor-not-allowed shadow',
+              inCart
+                ? 'bg-[#2D6A4F] text-white'
+                : 'text-white shadow-honey'
+            )}
+            style={!inCart ? { background: 'linear-gradient(135deg,#F4B942,#C8860A)' } : {}}
+            aria-label="কার্টে যোগ করুন">
+            <ShoppingCart size={15} />
+          </button>
         </div>
       </div>
     </Link>

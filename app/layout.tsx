@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Hind_Siliguri } from 'next/font/google';
 import { Toaster } from 'sonner';
-
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/layout/CartDrawer';
@@ -29,19 +28,12 @@ export const metadata: Metadata = {
     template: `%s | ${CONFIG.APP_NAME}`,
   },
   description: CONFIG.APP_DESCRIPTION,
-  keywords: ['মধু', 'অর্গানিক', 'সুন্দরবন মধু', 'বাদাম', 'খেজুর', 'ঘি', 'প্রাকৃতিক পণ্য', 'বাংলাদেশ'],
-  openGraph: {
-    type: 'website',
-    locale: 'bn_BD',
-    url: CONFIG.APP_URL,
-    siteName: CONFIG.APP_NAME,
-  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="bn" suppressHydrationWarning>
-      <body className={`${inter.variable} ${hindSiliguri.variable} font-body bg-background text-foreground antialiased`}>
+      <body className={`${inter.variable} ${hindSiliguri.variable} bg-page`}>
         <Navbar />
         <main className="min-h-screen pb-16 md:pb-0">
           {children}
@@ -51,9 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartDrawer />
         <Toaster
           position="top-center"
-          toastOptions={{
-            style: { fontFamily: 'var(--font-hind-siliguri)' },
-          }}
+          toastOptions={{ style: { fontFamily: 'var(--font-hind-siliguri)' } }}
         />
       </body>
     </html>

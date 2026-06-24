@@ -4,151 +4,156 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const SLIDES = [
   {
     id: 1,
-    titleBn: 'সুন্দরবনের বিশুদ্ধ মধু',
-    subtitleBn: 'প্রকৃতির সেরা উপহার — সরাসরি মৌচাক থেকে আপনার দরজায়',
-    ctaLabel: 'এখনই কিনুন',
-    ctaHref: '/shop/honey',
-    bg: 'from-amber-900/80 via-amber-800/60 to-transparent',
-    image: '/images/hero-honey.jpg',
+    badge: '✨ ১০০% বিশুদ্ধ',
+    title: 'সুন্দরবনের\nখাঁটি মধু',
+    subtitle: 'মৌচাক থেকে সরাসরি আপনার দরজায় — কোনো মিশ্রণ নেই, কোনো কেমিক্যাল নেই',
+    cta: 'মধু কিনুন',
+    ctaHref: '/shop?category=honey',
+    cta2: 'সব পণ্য',
+    cta2Href: '/shop',
+    image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=1600&q=85',
   },
   {
     id: 2,
-    titleBn: 'প্রিমিয়াম বাদাম ও ড্রাই ফ্রুটস',
-    subtitleBn: 'কাজু, আখরোট, পেস্তা ও আরো — সেরা মানের নিশ্চয়তায়',
-    ctaLabel: 'বাদাম দেখুন',
-    ctaHref: '/shop/nuts',
-    bg: 'from-green-900/80 via-green-800/60 to-transparent',
-    image: '/images/hero-nuts.jpg',
+    badge: '🥜 প্রিমিয়াম কোয়ালিটি',
+    title: 'সেরা বাদাম ও\nড্রাই ফ্রুটস',
+    subtitle: 'কাজু, আখরোট, পেস্তা, আলমন্ড — বিশ্বের সেরা বাদাম এক জায়গায়',
+    cta: 'বাদাম দেখুন',
+    ctaHref: '/shop?category=nuts',
+    cta2: 'সব পণ্য',
+    cta2Href: '/shop',
+    image: 'https://images.unsplash.com/photo-1604680696395-5b1bcda8df86?w=1600&q=85',
   },
   {
     id: 3,
-    titleBn: 'আজওয়া থেকে মেডজুল খেজুর',
-    subtitleBn: 'বিশ্বের সেরা খেজুরের সংগ্রহ — রমজান ও সারা বছরের জন্য',
-    ctaLabel: 'খেজুর দেখুন',
-    ctaHref: '/shop/dates',
-    bg: 'from-orange-900/80 via-orange-800/60 to-transparent',
-    image: '/images/hero-dates.jpg',
+    badge: '🌴 সৌদি আরব থেকে',
+    title: 'আজওয়া ও\nমেডজুল খেজুর',
+    subtitle: 'রমজান ও সারা বছরের জন্য বিশ্বের সেরা মানের খেজুর সরাসরি আপনার কাছে',
+    cta: 'খেজুর দেখুন',
+    ctaHref: '/shop?category=dates',
+    cta2: 'সব পণ্য',
+    cta2Href: '/shop',
+    image: 'https://images.unsplash.com/photo-1609780447631-05b93e5a88ea?w=1600&q=85',
   },
 ];
 
 export function HeroBanner() {
-  const [current, setCurrent] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [cur, setCur] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (isPaused) return;
-    const t = setInterval(() => {
-      setCurrent((c) => (c + 1) % SLIDES.length);
-    }, 5000);
+    if (paused) return;
+    const t = setInterval(() => setCur(c => (c + 1) % SLIDES.length), 5500);
     return () => clearInterval(t);
-  }, [isPaused]);
-
-  const prev = () => setCurrent((c) => (c - 1 + SLIDES.length) % SLIDES.length);
-  const next = () => setCurrent((c) => (c + 1) % SLIDES.length);
+  }, [paused]);
 
   return (
     <div
-      className="relative h-[280px] overflow-hidden sm:h-[360px] md:h-[480px] lg:h-[560px]"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      className="relative overflow-hidden"
+      style={{ height: 'clamp(260px, 50vw, 560px)' }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
+      {/* Slides */}
       {SLIDES.map((slide, i) => (
         <div
           key={slide.id}
           className={cn(
-            'absolute inset-0 transition-opacity duration-700',
-            i === current ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            'absolute inset-0 transition-opacity duration-1000',
+            i === cur ? 'opacity-100' : 'opacity-0 pointer-events-none'
           )}
         >
-          {/* Background image */}
+          {/* BG Image */}
           <Image
             src={slide.image}
-            alt={slide.titleBn}
+            alt={slide.title}
             fill
             className="object-cover"
             priority={i === 0}
             sizes="100vw"
           />
-          {/* Gradient overlay */}
-          <div className={cn('absolute inset-0 bg-gradient-to-r', slide.bg)} />
 
-          {/* Content */}
-          <div className="absolute inset-0 flex items-center">
-            <div className="mx-auto w-full max-w-7xl px-4">
-              <div className="max-w-md">
-                <h1
-                  className={cn(
-                    'font-display text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl',
-                    i === current && 'animate-slide-up'
-                  )}
-                >
-                  {slide.titleBn}
-                </h1>
-                <p
-                  className={cn(
-                    'mt-2 text-sm text-white/85 sm:text-base md:text-lg md:mt-3',
-                    i === current && 'animate-fade-in'
-                  )}
-                >
-                  {slide.subtitleBn}
-                </p>
-                <div className="mt-4 flex gap-3 md:mt-6">
-                  <Button
-                    asChild
-                    size="lg"
-                    className="bg-primary hover:bg-primary/90 shadow-honey text-sm md:text-base"
-                  >
-                    <Link href={slide.ctaHref}>{slide.ctaLabel}</Link>
-                  </Button>
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="lg"
-                    className="border-white/60 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 text-sm md:text-base"
-                  >
-                    <Link href="/shop">সব পণ্য</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Overlay gradient */}
+          <div className="gradient-hero-left absolute inset-0" />
+
+          {/* Bottom fade into page bg */}
+          <div className="absolute bottom-0 left-0 right-0 h-20"
+            style={{ background: 'linear-gradient(to top, #F2E8D5, transparent)' }} />
         </div>
       ))}
 
-      {/* Arrows — hidden on small mobile */}
-      <button
-        onClick={prev}
-        className="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/20 p-2 backdrop-blur-sm transition hover:bg-white/40 sm:flex"
-        aria-label="আগে"
-      >
-        <ChevronLeft size={18} className="text-white" />
-      </button>
-      <button
-        onClick={next}
-        className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/20 p-2 backdrop-blur-sm transition hover:bg-white/40 sm:flex"
-        aria-label="পরে"
-      >
-        <ChevronRight size={18} className="text-white" />
-      </button>
+      {/* Content */}
+      <div className="absolute inset-0 flex items-center">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
+          <div className="max-w-[480px]" key={cur}>
+            {/* Badge */}
+            <div className="inline-flex items-center rounded-full px-3 py-1 mb-3 text-xs font-semibold text-white animate-fade-in"
+              style={{ background: 'rgba(200,134,10,0.85)', backdropFilter: 'blur(4px)' }}>
+              {SLIDES[cur].badge}
+            </div>
+
+            {/* Title */}
+            <h1
+              className="font-display font-bold text-white leading-tight whitespace-pre-line animate-slide-up"
+              style={{ fontSize: 'clamp(1.75rem, 4vw, 3.25rem)' }}>
+              {SLIDES[cur].title}
+            </h1>
+
+            {/* Subtitle */}
+            <p className="mt-2.5 text-white/80 leading-relaxed animate-fade-in"
+              style={{ fontSize: 'clamp(0.8rem, 1.5vw, 1rem)' }}>
+              {SLIDES[cur].subtitle}
+            </p>
+
+            {/* CTAs */}
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href={SLIDES[cur].ctaHref}
+                className="inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-honey transition-all hover:-translate-y-0.5 hover:shadow-honey-lg"
+                style={{ background: 'linear-gradient(135deg,#F4B942,#C8860A)' }}>
+                {SLIDES[cur].cta} →
+              </Link>
+              <Link href={SLIDES[cur].cta2Href}
+                className="inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-white border border-white/35 transition-all hover:bg-white/15"
+                style={{ backdropFilter: 'blur(8px)', background: 'rgba(255,255,255,0.1)' }}>
+                {SLIDES[cur].cta2}
+              </Link>
+            </div>
+
+            {/* Trust line */}
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-white/60">
+              <span>✓ ১০০০+ সন্তুষ্ট গ্রাহক</span>
+              <span>✓ ৭ দিন রিটার্ন</span>
+              <span>✓ ফ্রি ডেলিভারি ৳১০০০+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Arrows */}
+      {['prev','next'].map(dir => (
+        <button
+          key={dir}
+          onClick={() => setCur(c => dir === 'prev' ? (c - 1 + SLIDES.length) % SLIDES.length : (c + 1) % SLIDES.length)}
+          className={cn(
+            'absolute top-1/2 -translate-y-1/2 hidden sm:flex h-9 w-9 items-center justify-center rounded-full border border-white/25 transition-all hover:bg-white/25',
+            dir === 'prev' ? 'left-3' : 'right-3'
+          )}
+          style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(6px)' }}>
+          {dir === 'prev' ? <ChevronLeft size={18} className="text-white" /> : <ChevronRight size={18} className="text-white" />}
+        </button>
+      ))}
 
       {/* Dots */}
-      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
         {SLIDES.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className={cn(
-              'h-1.5 rounded-full transition-all',
-              i === current ? 'w-6 bg-primary' : 'w-1.5 bg-white/60'
-            )}
-            aria-label={`স্লাইড ${i + 1}`}
-          />
+          <button key={i} onClick={() => setCur(i)}
+            className={cn('rounded-full transition-all duration-300',
+              i === cur ? 'w-6 h-2 bg-[#C8860A]' : 'w-2 h-2 bg-white/50')} />
         ))}
       </div>
     </div>

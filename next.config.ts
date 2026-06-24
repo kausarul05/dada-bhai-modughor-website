@@ -10,6 +10,7 @@ const config: NextConfig = {
       { protocol: 'https', hostname: '**.r2.dev' },
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' }, // dev only
+      { protocol: 'https', hostname: 'plus.unsplash.com' },
     ],
   },
   experimental: {
