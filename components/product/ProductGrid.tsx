@@ -8,7 +8,6 @@ interface ProductGridProps {
   products: Product[];
   loading?: boolean;
   skeletonCount?: number;
-  layout?: 'grid' | 'list';
   columns?: 2 | 3 | 4;
 }
 
@@ -20,15 +19,14 @@ const colMap = {
 
 function ProductSkeleton() {
   return (
-    <div className="rounded-xl border border-border bg-surface overflow-hidden">
-      <Skeleton className="aspect-square w-full" />
+    <div className="rounded-2xl border border-[#D9CEBC] bg-[#FAF4E8] overflow-hidden">
+      <Skeleton className="aspect-square w-full bg-[#EAE0CB]" />
       <div className="p-3 space-y-2">
-        <Skeleton className="h-4 w-3/4" />
-        <Skeleton className="h-3 w-1/2" />
-        <Skeleton className="h-3 w-1/3" />
+        <Skeleton className="h-4 w-3/4 bg-[#EAE0CB]" />
+        <Skeleton className="h-3 w-1/2 bg-[#EAE0CB]" />
         <div className="flex justify-between items-center pt-1">
-          <Skeleton className="h-5 w-16" />
-          <Skeleton className="h-9 w-9 rounded-lg" />
+          <Skeleton className="h-5 w-16 bg-[#EAE0CB]" />
+          <Skeleton className="h-9 w-9 rounded-xl bg-[#EAE0CB]" />
         </div>
       </div>
     </div>
@@ -39,7 +37,6 @@ export function ProductGrid({
   products,
   loading,
   skeletonCount = 8,
-  layout = 'grid',
   columns = 4,
 }: ProductGridProps) {
   if (loading) {
@@ -59,16 +56,6 @@ export function ProductGrid({
         title="কোনো পণ্য পাওয়া যায়নি"
         description="অন্য ফিল্টার দিয়ে চেষ্টা করুন"
       />
-    );
-  }
-
-  if (layout === 'list') {
-    return (
-      <div className="flex flex-col gap-3">
-        {products.map((p) => (
-          <ProductCard key={p.id} product={p} layout="list" />
-        ))}
-      </div>
     );
   }
 

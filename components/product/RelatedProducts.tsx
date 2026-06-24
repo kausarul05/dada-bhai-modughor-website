@@ -9,11 +9,7 @@ interface RelatedProductsProps {
 
 export async function RelatedProducts({ categoryId, excludeId }: RelatedProductsProps) {
   const products = await prisma.product.findMany({
-    where: {
-      categoryId,
-      isActive: true,
-      NOT: { id: excludeId },
-    },
+    where: { categoryId, isActive: true, NOT: { id: excludeId } },
     include: { category: true },
     take: 4,
     orderBy: { rating: 'desc' },
@@ -22,8 +18,12 @@ export async function RelatedProducts({ categoryId, excludeId }: RelatedProducts
   if (products.length === 0) return null;
 
   return (
-    <div className="mt-12">
-      <SectionHeader title="সম্পর্কিত পণ্য" ctaLabel="সব দেখুন" ctaHref="/shop" />
+    <div className="mt-10">
+      <SectionHeader
+        title="সম্পর্কিত পণ্য"
+        ctaLabel="সব দেখুন →"
+        ctaHref="/shop"
+      />
       <ProductGrid products={products as any} columns={4} />
     </div>
   );
