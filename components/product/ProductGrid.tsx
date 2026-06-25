@@ -11,6 +11,7 @@ interface ProductGridProps {
   columns?: 2 | 3 | 4;
 }
 
+// Mobile সবসময় 2 col, desktop columns prop অনুযায়ী
 const colMap = {
   2: 'grid-cols-2',
   3: 'grid-cols-2 md:grid-cols-3',
@@ -20,28 +21,23 @@ const colMap = {
 function ProductSkeleton() {
   return (
     <div className="rounded-2xl border border-[#D9CEBC] bg-[#FAF4E8] overflow-hidden">
-      <Skeleton className="aspect-square w-full bg-[#EAE0CB]" />
+      <div className="aspect-square bg-[#EAE0CB] animate-pulse" />
       <div className="p-3 space-y-2">
-        <Skeleton className="h-4 w-3/4 bg-[#EAE0CB]" />
-        <Skeleton className="h-3 w-1/2 bg-[#EAE0CB]" />
+        <div className="h-4 w-3/4 rounded-lg bg-[#EAE0CB] animate-pulse" />
+        <div className="h-3 w-1/2 rounded-lg bg-[#EAE0CB] animate-pulse" />
         <div className="flex justify-between items-center pt-1">
-          <Skeleton className="h-5 w-16 bg-[#EAE0CB]" />
-          <Skeleton className="h-9 w-9 rounded-xl bg-[#EAE0CB]" />
+          <div className="h-5 w-16 rounded-lg bg-[#EAE0CB] animate-pulse" />
+          <div className="h-9 w-9 rounded-xl bg-[#EAE0CB] animate-pulse" />
         </div>
       </div>
     </div>
   );
 }
 
-export function ProductGrid({
-  products,
-  loading,
-  skeletonCount = 8,
-  columns = 4,
-}: ProductGridProps) {
+export function ProductGrid({ products, loading, skeletonCount = 6, columns = 4 }: ProductGridProps) {
   if (loading) {
     return (
-      <div className={`grid gap-3 md:gap-4 ${colMap[columns]}`}>
+      <div className={`grid gap-3 ${colMap[columns]}`}>
         {Array.from({ length: skeletonCount }).map((_, i) => (
           <ProductSkeleton key={i} />
         ))}
@@ -60,8 +56,8 @@ export function ProductGrid({
   }
 
   return (
-    <div className={`grid gap-3 md:gap-4 ${colMap[columns]}`}>
-      {products.map((p) => (
+    <div className={`grid gap-3 ${colMap[columns]}`}>
+      {products.map(p => (
         <ProductCard key={p.id} product={p} />
       ))}
     </div>
